@@ -1,0 +1,930 @@
+<html lang="en" class="scroll-smooth"><head>
+    <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Enterprise Prompt Engineering Masterclass</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,1,0">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&amp;family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet">
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        fontFamily: {
+                            sans: ['Inter', 'sans-serif'],
+                            mono: ['JetBrains Mono', 'monospace'],
+                        },
+                        colors: {
+                            anthropic: {
+                                base: '#d4d4d8', // zinc-300
+                                dark: '#18181b', // zinc-900
+                                card: '#27272a', // zinc-800
+                                accent: '#d97757', // burned orange-ish
+                                highlight: '#f4f4f5', // zinc-100
+                            }
+                        }
+                    }
+                }
+            }
+        </script>
+        <style>
+            body {
+                background-color: #0f172a;
+                color: #e2e8f0;
+            }
+            .glass-panel {
+                background: rgba(30, 41, 59, 0.7);
+                backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+            }
+            .code-token {
+                transition: all 0.2s;
+                cursor: help;
+            }
+            .code-token:hover {
+                background-color: #334155;
+                color: #38bdf8;
+                border-radius: 4px;
+            }
+            .step-card {
+                transition: transform 0.3s ease, border-color 0.3s ease;
+            }
+            .step-card:hover {
+                transform: translateY(-4px);
+                border-color: #38bdf8;
+            }
+            /* Custom Scrollbar */
+            ::-webkit-scrollbar {
+                width: 8px;
+            }
+            ::-webkit-scrollbar-track {
+                background: #0f172a;
+            }
+            ::-webkit-scrollbar-thumb {
+                background: #334155;
+                border-radius: 4px;
+            }
+            ::-webkit-scrollbar-thumb:hover {
+                background: #475569;
+            }
+            .animate-pulse-slow {
+                animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+            }
+        </style>
+    <style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:Inter, sans-serif;font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:JetBrains Mono, monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.fixed{position:fixed}.absolute{position:absolute}.relative{position:relative}.sticky{position:sticky}.inset-0{inset:0px}.inset-y-0{top:0px;bottom:0px}.-top-3{top:-0.75rem}.left-0{left:0px}.left-4{left:1rem}.right-0{right:0px}.top-0{top:0px}.z-0{z-index:0}.z-10{z-index:10}.z-20{z-index:20}.z-40{z-index:40}.z-50{z-index:50}.mx-auto{margin-left:auto;margin-right:auto}.my-1{margin-top:0.25rem;margin-bottom:0.25rem}.my-4{margin-top:1rem;margin-bottom:1rem}.mb-1{margin-bottom:0.25rem}.mb-10{margin-bottom:2.5rem}.mb-12{margin-bottom:3rem}.mb-2{margin-bottom:0.5rem}.mb-20{margin-bottom:5rem}.mb-4{margin-bottom:1rem}.mb-6{margin-bottom:1.5rem}.mb-8{margin-bottom:2rem}.ml-2{margin-left:0.5rem}.mt-1{margin-top:0.25rem}.mt-12{margin-top:3rem}.mt-2{margin-top:0.5rem}.mt-3{margin-top:0.75rem}.mt-4{margin-top:1rem}.mt-6{margin-top:1.5rem}.mt-8{margin-top:2rem}.block{display:block}.flex{display:flex}.inline-flex{display:inline-flex}.grid{display:grid}.hidden{display:none}.aspect-square{aspect-ratio:1 / 1}.h-1{height:0.25rem}.h-1\.5{height:0.375rem}.h-12{height:3rem}.h-2{height:0.5rem}.h-20{height:5rem}.h-3{height:0.75rem}.h-32{height:8rem}.h-40{height:10rem}.h-full{height:100%}.h-px{height:1px}.h-screen{height:100vh}.max-h-\[600px\]{max-height:600px}.min-h-\[150px\]{min-height:150px}.min-h-\[300px\]{min-height:300px}.min-h-\[60vh\]{min-height:60vh}.min-h-screen{min-height:100vh}.w-12{width:3rem}.w-2{width:0.5rem}.w-3{width:0.75rem}.w-32{width:8rem}.w-64{width:16rem}.w-\[40\%\]{width:40%}.w-\[75\%\]{width:75%}.w-\[98\%\]{width:98%}.w-full{width:100%}.max-w-2xl{max-width:42rem}.max-w-3xl{max-width:48rem}.max-w-4xl{max-width:56rem}.max-w-6xl{max-width:72rem}.flex-1{flex:1 1 0%}.shrink-0{flex-shrink:0}.-translate-x-full{--tw-translate-x:-100%;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.rotate-90{--tw-rotate:90deg;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.transform{transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}@keyframes pulse{50%{opacity:.5}}.animate-pulse{animation:pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite}.cursor-pointer{cursor:pointer}.flex-col{flex-direction:column}.items-start{align-items:flex-start}.items-center{align-items:center}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-12{gap:3rem}.gap-2{gap:0.5rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.gap-6{gap:1.5rem}.gap-8{gap:2rem}.space-y-1 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.25rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.25rem * var(--tw-space-y-reverse))}.space-y-2 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.5rem * var(--tw-space-y-reverse))}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.overflow-hidden{overflow:hidden}.overflow-y-auto{overflow-y:auto}.scroll-smooth{scroll-behavior:smooth}.rounded{border-radius:0.25rem}.rounded-2xl{border-radius:1rem}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:0.5rem}.rounded-xl{border-radius:0.75rem}.border{border-width:1px}.border-y{border-top-width:1px;border-bottom-width:1px}.border-b{border-bottom-width:1px}.border-l-4{border-left-width:4px}.border-r{border-right-width:1px}.border-t{border-top-width:1px}.border-blue-500{--tw-border-opacity:1;border-color:rgb(59 130 246 / var(--tw-border-opacity, 1))}.border-green-500{--tw-border-opacity:1;border-color:rgb(34 197 94 / var(--tw-border-opacity, 1))}.border-indigo-500{--tw-border-opacity:1;border-color:rgb(99 102 241 / var(--tw-border-opacity, 1))}.border-purple-500{--tw-border-opacity:1;border-color:rgb(168 85 247 / var(--tw-border-opacity, 1))}.border-red-500{--tw-border-opacity:1;border-color:rgb(239 68 68 / var(--tw-border-opacity, 1))}.border-red-500\/30{border-color:rgb(239 68 68 / 0.3)}.border-sky-500\/20{border-color:rgb(14 165 233 / 0.2)}.border-slate-600{--tw-border-opacity:1;border-color:rgb(71 85 105 / var(--tw-border-opacity, 1))}.border-slate-700{--tw-border-opacity:1;border-color:rgb(51 65 85 / var(--tw-border-opacity, 1))}.border-slate-800{--tw-border-opacity:1;border-color:rgb(30 41 59 / var(--tw-border-opacity, 1))}.border-transparent{border-color:transparent}.border-yellow-500{--tw-border-opacity:1;border-color:rgb(234 179 8 / var(--tw-border-opacity, 1))}.border-purple-500\/50{border-color:rgb(168 85 247 / 0.5)}.border-yellow-500\/50{border-color:rgb(234 179 8 / 0.5)}.bg-\[\#0d1117\]{--tw-bg-opacity:1;background-color:rgb(13 17 23 / var(--tw-bg-opacity, 1))}.bg-black{--tw-bg-opacity:1;background-color:rgb(0 0 0 / var(--tw-bg-opacity, 1))}.bg-blue-500\/10{background-color:rgb(59 130 246 / 0.1)}.bg-green-500{--tw-bg-opacity:1;background-color:rgb(34 197 94 / var(--tw-bg-opacity, 1))}.bg-green-500\/10{background-color:rgb(34 197 94 / 0.1)}.bg-green-500\/20{background-color:rgb(34 197 94 / 0.2)}.bg-indigo-500\/10{background-color:rgb(99 102 241 / 0.1)}.bg-indigo-900\/50{background-color:rgb(49 46 129 / 0.5)}.bg-pink-600{--tw-bg-opacity:1;background-color:rgb(219 39 119 / var(--tw-bg-opacity, 1))}.bg-pink-900\/50{background-color:rgb(131 24 67 / 0.5)}.bg-purple-500{--tw-bg-opacity:1;background-color:rgb(168 85 247 / var(--tw-bg-opacity, 1))}.bg-purple-500\/10{background-color:rgb(168 85 247 / 0.1)}.bg-purple-500\/20{background-color:rgb(168 85 247 / 0.2)}.bg-purple-900\/50{background-color:rgb(88 28 135 / 0.5)}.bg-red-500\/10{background-color:rgb(239 68 68 / 0.1)}.bg-red-500\/20{background-color:rgb(239 68 68 / 0.2)}.bg-sky-400{--tw-bg-opacity:1;background-color:rgb(56 189 248 / var(--tw-bg-opacity, 1))}.bg-sky-500{--tw-bg-opacity:1;background-color:rgb(14 165 233 / var(--tw-bg-opacity, 1))}.bg-sky-500\/10{background-color:rgb(14 165 233 / 0.1)}.bg-sky-600{--tw-bg-opacity:1;background-color:rgb(2 132 199 / var(--tw-bg-opacity, 1))}.bg-sky-900\/50{background-color:rgb(12 74 110 / 0.5)}.bg-slate-700{--tw-bg-opacity:1;background-color:rgb(51 65 85 / var(--tw-bg-opacity, 1))}.bg-slate-800{--tw-bg-opacity:1;background-color:rgb(30 41 59 / var(--tw-bg-opacity, 1))}.bg-slate-900{--tw-bg-opacity:1;background-color:rgb(15 23 42 / var(--tw-bg-opacity, 1))}.bg-slate-900\/50{background-color:rgb(15 23 42 / 0.5)}.bg-yellow-500{--tw-bg-opacity:1;background-color:rgb(234 179 8 / var(--tw-bg-opacity, 1))}.bg-yellow-500\/10{background-color:rgb(234 179 8 / 0.1)}.bg-yellow-500\/20{background-color:rgb(234 179 8 / 0.2)}.bg-purple-900\/20{background-color:rgb(88 28 135 / 0.2)}.bg-yellow-900\/20{background-color:rgb(113 63 18 / 0.2)}.bg-\[radial-gradient\(ellipse_at_center\2c _var\(--tw-gradient-stops\)\)\]{background-image:radial-gradient(ellipse at center, var(--tw-gradient-stops))}.bg-gradient-to-r{background-image:linear-gradient(to right, var(--tw-gradient-stops))}.bg-gradient-to-t{background-image:linear-gradient(to top, var(--tw-gradient-stops))}.from-indigo-900{--tw-gradient-from:#312e81 var(--tw-gradient-from-position);--tw-gradient-to:rgb(49 46 129 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.from-red-900\/20{--tw-gradient-from:rgb(127 29 29 / 0.2) var(--tw-gradient-from-position);--tw-gradient-to:rgb(127 29 29 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.from-sky-400{--tw-gradient-from:#38bdf8 var(--tw-gradient-from-position);--tw-gradient-to:rgb(56 189 248 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.from-slate-900{--tw-gradient-from:#0f172a var(--tw-gradient-from-position);--tw-gradient-to:rgb(15 23 42 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.via-slate-900{--tw-gradient-to:rgb(15 23 42 / 0)  var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), #0f172a var(--tw-gradient-via-position), var(--tw-gradient-to)}.to-indigo-400{--tw-gradient-to:#818cf8 var(--tw-gradient-to-position)}.to-slate-800{--tw-gradient-to:#1e293b var(--tw-gradient-to-position)}.to-slate-900{--tw-gradient-to:#0f172a var(--tw-gradient-to-position)}.to-transparent{--tw-gradient-to:transparent var(--tw-gradient-to-position)}.bg-clip-text{-webkit-background-clip:text;background-clip:text}.object-cover{object-fit:cover}.p-1{padding:0.25rem}.p-2{padding:0.5rem}.p-3{padding:0.75rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.p-8{padding:2rem}.px-1{padding-left:0.25rem;padding-right:0.25rem}.px-2{padding-left:0.5rem;padding-right:0.5rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-4{padding-left:1rem;padding-right:1rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.px-8{padding-left:2rem;padding-right:2rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.py-20{padding-top:5rem;padding-bottom:5rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.py-4{padding-top:1rem;padding-bottom:1rem}.pb-4{padding-bottom:1rem}.pl-4{padding-left:1rem}.pl-8{padding-left:2rem}.text-left{text-align:left}.text-center{text-align:center}.text-right{text-align:right}.font-mono{font-family:JetBrains Mono, monospace}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-6xl{font-size:3.75rem;line-height:1}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.font-medium{font-weight:500}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.italic{font-style:italic}.leading-relaxed{line-height:1.625}.leading-tight{line-height:1.25}.tracking-tight{letter-spacing:-0.025em}.tracking-wide{letter-spacing:0.025em}.tracking-wider{letter-spacing:0.05em}.tracking-widest{letter-spacing:0.1em}.text-blue-400{--tw-text-opacity:1;color:rgb(96 165 250 / var(--tw-text-opacity, 1))}.text-green-300{--tw-text-opacity:1;color:rgb(134 239 172 / var(--tw-text-opacity, 1))}.text-green-400{--tw-text-opacity:1;color:rgb(74 222 128 / var(--tw-text-opacity, 1))}.text-green-500{--tw-text-opacity:1;color:rgb(34 197 94 / var(--tw-text-opacity, 1))}.text-indigo-300{--tw-text-opacity:1;color:rgb(165 180 252 / var(--tw-text-opacity, 1))}.text-indigo-400{--tw-text-opacity:1;color:rgb(129 140 248 / var(--tw-text-opacity, 1))}.text-orange-300{--tw-text-opacity:1;color:rgb(253 186 116 / var(--tw-text-opacity, 1))}.text-orange-400{--tw-text-opacity:1;color:rgb(251 146 60 / var(--tw-text-opacity, 1))}.text-pink-300{--tw-text-opacity:1;color:rgb(249 168 212 / var(--tw-text-opacity, 1))}.text-pink-400{--tw-text-opacity:1;color:rgb(244 114 182 / var(--tw-text-opacity, 1))}.text-purple-400{--tw-text-opacity:1;color:rgb(192 132 252 / var(--tw-text-opacity, 1))}.text-purple-500{--tw-text-opacity:1;color:rgb(168 85 247 / var(--tw-text-opacity, 1))}.text-red-300{--tw-text-opacity:1;color:rgb(252 165 165 / var(--tw-text-opacity, 1))}.text-red-400{--tw-text-opacity:1;color:rgb(248 113 113 / var(--tw-text-opacity, 1))}.text-sky-300{--tw-text-opacity:1;color:rgb(125 211 252 / var(--tw-text-opacity, 1))}.text-sky-400{--tw-text-opacity:1;color:rgb(56 189 248 / var(--tw-text-opacity, 1))}.text-slate-300{--tw-text-opacity:1;color:rgb(203 213 225 / var(--tw-text-opacity, 1))}.text-slate-400{--tw-text-opacity:1;color:rgb(148 163 184 / var(--tw-text-opacity, 1))}.text-slate-500{--tw-text-opacity:1;color:rgb(100 116 139 / var(--tw-text-opacity, 1))}.text-slate-600{--tw-text-opacity:1;color:rgb(71 85 105 / var(--tw-text-opacity, 1))}.text-teal-400{--tw-text-opacity:1;color:rgb(45 212 191 / var(--tw-text-opacity, 1))}.text-transparent{color:transparent}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.text-yellow-400{--tw-text-opacity:1;color:rgb(250 204 21 / var(--tw-text-opacity, 1))}.text-yellow-500{--tw-text-opacity:1;color:rgb(234 179 8 / var(--tw-text-opacity, 1))}.antialiased{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.opacity-10{opacity:0.1}.opacity-20{opacity:0.2}.opacity-75{opacity:0.75}.shadow{--tw-shadow:0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-2xl{--tw-shadow:0 25px 50px -12px rgb(0 0 0 / 0.25);--tw-shadow-colored:0 25px 50px -12px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-\[0_0_20px_rgba\(168\2c 85\2c 247\2c 0\.3\)\]{--tw-shadow:0 0 20px rgba(168,85,247,0.3);--tw-shadow-colored:0 0 20px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-inner{--tw-shadow:inset 0 2px 4px 0 rgb(0 0 0 / 0.05);--tw-shadow-colored:inset 0 2px 4px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-lg{--tw-shadow:0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 10px 15px -3px var(--tw-shadow-color), 0 4px 6px -4px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-sky-500\/25{--tw-shadow-color:rgb(14 165 233 / 0.25);--tw-shadow:var(--tw-shadow-colored)}.outline-none{outline:2px solid transparent;outline-offset:2px}.transition-all{transition-property:all;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-colors{transition-property:color, background-color, border-color, fill, stroke, -webkit-text-decoration-color;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, -webkit-text-decoration-color;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-opacity{transition-property:opacity;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-transform{transition-property:transform;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.duration-300{transition-duration:300ms}.ease-in-out{transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1)}.hover\:scale-105:hover{--tw-scale-x:1.05;--tw-scale-y:1.05;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.hover\:border-green-500:hover{--tw-border-opacity:1;border-color:rgb(34 197 94 / var(--tw-border-opacity, 1))}.hover\:border-indigo-500:hover{--tw-border-opacity:1;border-color:rgb(99 102 241 / var(--tw-border-opacity, 1))}.hover\:border-pink-500:hover{--tw-border-opacity:1;border-color:rgb(236 72 153 / var(--tw-border-opacity, 1))}.hover\:border-purple-500:hover{--tw-border-opacity:1;border-color:rgb(168 85 247 / var(--tw-border-opacity, 1))}.hover\:border-sky-500:hover{--tw-border-opacity:1;border-color:rgb(14 165 233 / var(--tw-border-opacity, 1))}.hover\:border-slate-500:hover{--tw-border-opacity:1;border-color:rgb(100 116 139 / var(--tw-border-opacity, 1))}.hover\:border-yellow-500:hover{--tw-border-opacity:1;border-color:rgb(234 179 8 / var(--tw-border-opacity, 1))}.hover\:bg-pink-700:hover{--tw-bg-opacity:1;background-color:rgb(190 24 93 / var(--tw-bg-opacity, 1))}.hover\:bg-sky-500:hover{--tw-bg-opacity:1;background-color:rgb(14 165 233 / var(--tw-bg-opacity, 1))}.hover\:bg-sky-600:hover{--tw-bg-opacity:1;background-color:rgb(2 132 199 / var(--tw-bg-opacity, 1))}.hover\:bg-slate-600:hover{--tw-bg-opacity:1;background-color:rgb(71 85 105 / var(--tw-bg-opacity, 1))}.hover\:bg-slate-700:hover{--tw-bg-opacity:1;background-color:rgb(51 65 85 / var(--tw-bg-opacity, 1))}.hover\:bg-slate-800:hover{--tw-bg-opacity:1;background-color:rgb(30 41 59 / var(--tw-bg-opacity, 1))}.hover\:text-white:hover{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.focus\:border-blue-500:focus{--tw-border-opacity:1;border-color:rgb(59 130 246 / var(--tw-border-opacity, 1))}.focus\:border-green-500:focus{--tw-border-opacity:1;border-color:rgb(34 197 94 / var(--tw-border-opacity, 1))}.focus\:border-purple-500:focus{--tw-border-opacity:1;border-color:rgb(168 85 247 / var(--tw-border-opacity, 1))}.focus\:border-yellow-500:focus{--tw-border-opacity:1;border-color:rgb(234 179 8 / var(--tw-border-opacity, 1))}.group:hover .group-hover\:opacity-20{opacity:0.2}@media (min-width: 768px){.md\:relative{position:relative}.md\:hidden{display:none}.md\:w-1\/3{width:33.333333%}.md\:w-40{width:10rem}.md\:translate-x-0{--tw-translate-x:0px;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.md\:rotate-0{--tw-rotate:0deg;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.md\:flex-row{flex-direction:row}.md\:text-6xl{font-size:3.75rem;line-height:1}.md\:text-sm{font-size:0.875rem;line-height:1.25rem}}@media (min-width: 1024px){.lg\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}}</style><link type="text/css" href="https://fonts.googleapis.com/css2?family=Google+Symbols:opsz,wght,FILL,GRAD,ROND@24,400,0,0,50&amp;icon_names=link" rel="stylesheet"><style id="dyn-img-link-styles-di-script">
+          .dyn-img-link-wrapper-di-script {
+            anchor-scope: all;
+            display: contents;
+            position: relative;
+            z-index: 1;
+          }
+    
+          .dyn-img-link-wrapper-di-script img {
+            anchor-name: --photo;
+            display: block;
+            max-width: 100%;
+          }
+    
+          .dyn-img-link-di-script {
+            z-index: 999999;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 9999px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            color: white;
+            height: clamp(13px, calc(max(anchor-size(width), anchor-size(height)) * 0.3), 21px);
+            width: clamp(13px, calc(max(anchor-size(width), anchor-size(height)) * 0.3), 21px);
+            padding: 4px;
+            position: absolute;
+    
+            bottom: anchor(bottom);
+            left: anchor(left);
+            margin-left: 10px;
+            margin-bottom: 10px;
+    
+            transition: background-color 0.2s ease-in-out;
+          }
+    
+          .dyn-img-link-di-script:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+          }
+    
+          .dyn-img-link-di-script span {
+            font-size: 14px;
+            vertical-align: top;
+          }
+    
+          .dyn-img-attribution-button-di-script {
+            z-index: 999999;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 9999px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            color: white;
+            width: clamp(13px, calc(max(anchor-size(width), anchor-size(height)) * 0.3), 21px);
+            height: clamp(13px, calc(max(anchor-size(width), anchor-size(height)) * 0.3), 21px);
+            padding: 4px;
+    
+            position: absolute;
+            position-anchor: --photo;
+            top: anchor(top);
+            right: anchor(right);
+            margin-top: 10px;
+            margin-right: 10px;
+    
+            transition: background-color 0.2s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+    
+          .dyn-img-attribution-button-di-script:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+          }
+    
+          .dyn-img-attribution-button-di-script span {
+            font-size: 14px;
+            vertical-align: top;
+          }
+    
+          .dyn-img-inline-attribution-di-script {
+            z-index: 999999;
+            font-size: 12px;
+            padding: 4px;
+            display: none;
+    
+            position: absolute;
+            position-anchor: --photo;
+            bottom: anchor(bottom);
+            right: anchor(right);
+            margin-bottom: 8px;
+            margin-right: 8px;
+    
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-align: right;
+    
+            white-space: nowrap;
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 9999px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            color: white;
+          }
+        </style></head>
+    <body class="antialiased min-h-screen flex flex-col md:flex-row">
+    
+        <!-- Mobile Header -->
+        <div class="md:hidden flex items-center justify-between p-4 bg-slate-900 border-b border-slate-700 z-50 sticky top-0">
+            <h1 class="text-xl font-bold text-white tracking-tight">Prompt<span class="text-sky-400">Eng</span></h1>
+            <button id="mobile-menu-btn" class="text-white p-2">
+                <span class="material-symbols-outlined">menu</span>
+            </button>
+        </div>
+    
+        <!-- Sidebar Navigation -->
+        <nav id="sidebar" class="fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 w-64 bg-slate-900 border-r border-slate-800 flex flex-col z-40 transition-transform duration-300 ease-in-out shrink-0">
+            <div class="p-6 border-b border-slate-800">
+                <h1 class="text-2xl font-bold text-white tracking-tight mb-1">Prompt<span class="text-sky-400">Eng</span></h1>
+                <p class="text-xs text-slate-400 uppercase tracking-widest">Enterprise Edition</p>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto py-4">
+                <ul class="space-y-1 px-3">
+                    <li><a href="#intro" class="nav-link block px-4 py-3 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3"><span class="material-symbols-outlined text-sky-400">school</span>Foundations</a></li>
+                    <li><a href="#models" class="nav-link block px-4 py-3 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3"><span class="material-symbols-outlined text-purple-400">psychology</span>The Model Family</a></li>
+                    <li><a href="#anatomy" class="nav-link block px-4 py-3 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3"><span class="material-symbols-outlined text-green-400">architecture</span>Anatomy of a Prompt</a></li>
+                    <li><a href="#advanced" class="nav-link block px-4 py-3 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3"><span class="material-symbols-outlined text-yellow-400">tune</span>Advanced Controls</a></li>
+                    <li><a href="#risk" class="nav-link block px-4 py-3 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3"><span class="material-symbols-outlined text-red-400">shield</span>Risk &amp; Reliability</a></li>
+                    <li><a href="#architecture" class="nav-link block px-4 py-3 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3"><span class="material-symbols-outlined text-indigo-400">hub</span>Agentic Systems</a></li>
+                    <li><a href="#quiz" class="nav-link block px-4 py-3 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3"><span class="material-symbols-outlined text-teal-400">quiz</span>Certification</a></li>
+                </ul>
+            </div>
+    
+            <div class="p-4 border-t border-slate-800">
+                <div class="bg-slate-800 rounded-lg p-3">
+                    <p class="text-xs text-slate-400 mb-2">Course Progress</p>
+                    <div class="w-full bg-slate-700 rounded-full h-1.5">
+                        <div id="progress-bar" class="bg-sky-500 h-1.5 rounded-full" style="width: 0%;"></div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto h-screen relative">
+            
+            <!-- Hero Section -->
+            <header id="intro" class="relative min-h-[60vh] flex items-center justify-center p-8 border-b border-slate-800 overflow-hidden">
+                <div class="absolute inset-0 z-0">
+                    <svg class="absolute inset-0 w-full h-full object-cover opacity-20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">
+                        <defs>
+                            <radialGradient id="brain-gradient" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+                                <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.5" />
+                                <stop offset="100%" stop-color="#818cf8" stop-opacity="0" />
+                            </radialGradient>
+                            <filter id="glow">
+                                <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+                                <feMerge>
+                                    <feMergeNode in="coloredBlur"/>
+                                    <feMergeNode in="SourceGraphic"/>
+                                </feMerge>
+                            </filter>
+                        </defs>
+                        <g stroke="#6366f1" stroke-width="0.5" stroke-opacity="0.3">
+                            <line x1="100" y1="100" x2="200" y2="200" />
+                            <line x1="200" y1="200" x2="300" y2="150" />
+                            <line x1="300" y1="150" x2="400" y2="250" />
+                            <line x1="400" y1="250" x2="250" y2="350" />
+                            <line x1="250" y1="350" x2="100" y2="300" />
+                            <line x1="100" y1="300" x2="100" y2="100" />
+                            <line x1="500" y1="100" x2="600" y2="200" />
+                            <line x1="600" y1="200" x2="700" y2="100" />
+                            <line x1="400" y1="250" x2="500" y2="350" />
+                            <line x1="500" y1="350" x2="650" y2="300" />
+                            <line x1="650" y1="300" x2="600" y2="200" />
+                        </g>
+                        <g fill="#38bdf8" filter="url(#glow)">
+                            <circle cx="100" cy="100" r="3" opacity="0.6">
+                                <animate attributeName="r" values="3;5;3" dur="3s" repeatCount="indefinite" />
+                                <animate attributeName="opacity" values="0.6;1;0.6" dur="3s" repeatCount="indefinite" />
+                            </circle>
+                            <circle cx="200" cy="200" r="4" opacity="0.8" />
+                            <circle cx="300" cy="150" r="3" opacity="0.5" />
+                            <circle cx="400" cy="250" r="5" opacity="0.9">
+                                <animate attributeName="r" values="5;7;5" dur="4s" repeatCount="indefinite" />
+                            </circle>
+                            <circle cx="250" cy="350" r="3" opacity="0.6" />
+                            <circle cx="100" cy="300" r="4" opacity="0.7" />
+                            <circle cx="500" cy="100" r="3" opacity="0.5" />
+                            <circle cx="600" cy="200" r="4" opacity="0.8" />
+                            <circle cx="700" cy="100" r="3" opacity="0.6" />
+                            <circle cx="500" cy="350" r="4" opacity="0.7" />
+                            <circle cx="650" cy="300" r="3" opacity="0.5" />
+                        </g>
+                        <circle cx="100" cy="100" r="1" fill="#fff">
+                            <animateMotion path="M0,0 L100,100" dur="2s" repeatCount="indefinite" />
+                        </circle>
+                        <circle cx="300" cy="150" r="1" fill="#fff">
+                            <animateMotion path="M0,0 L100,100" dur="2.5s" repeatCount="indefinite" />
+                        </circle>
+                    </svg>
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent"></div>
+                </div>
+                
+                <div class="relative z-10 max-w-3xl text-center">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-400 text-xs font-bold uppercase tracking-wide mb-6">
+                        <span class="w-2 h-2 rounded-full bg-sky-400 animate-pulse"></span>
+                        Developer Training Manual
+                    </div>
+                    <h1 class="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
+                        Enterprise-Grade <br>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-indigo-400">Prompt Engineering</span>
+                    </h1>
+                    <p class="text-lg text-slate-300 mb-8 leading-relaxed">
+                        Move beyond simple tricks. Master the systematic engineering discipline required to build reliable, scalable, and cost-effective AI applications with the Claude API.
+                    </p>
+                    <button onclick="document.getElementById('models').scrollIntoView({behavior: 'smooth'})" class="bg-sky-500 hover:bg-sky-600 text-white font-semibold py-3 px-8 rounded-lg transition-all transform hover:scale-105 shadow-lg shadow-sky-500/25 flex items-center gap-2 mx-auto">
+                        Start Training
+                        <span class="material-symbols-outlined">arrow_downward</span>
+                    </button>
+                </div>
+            </header>
+    
+            <!-- Module 1: Models -->
+            <section id="models" class="py-20 px-6 max-w-6xl mx-auto">
+                <div class="mb-12">
+                    <h2 class="text-3xl font-bold text-white mb-4 flex items-center gap-3">
+                        <span class="p-2 bg-purple-500/10 rounded-lg text-purple-400 material-symbols-outlined">psychology</span>
+                        1. The Claude Model Family
+                    </h2>
+                    <p class="text-slate-400 text-lg max-w-2xl">
+                        Understanding the distinct capabilities of the Claude family is the first step in architecting an effective application. Select a model to see its enterprise use case.
+                    </p>
+                </div>
+    
+                <div class="grid md:grid-cols-3 gap-6">
+                    <!-- Opus -->
+                    <div class="group relative bg-slate-800 rounded-xl border border-slate-700 hover:border-purple-500 transition-all cursor-pointer overflow-hidden p-6" onclick="selectModel('opus')">
+                        <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                            <span class="material-symbols-outlined text-6xl text-purple-500 js-replaced-missing-icon">radio_button_unchecked</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-2">Claude 3 Opus</h3>
+                        <div class="text-xs font-mono text-purple-400 mb-4 uppercase">The Brainiac</div>
+                        <p class="text-slate-400 text-sm mb-4">Most advanced, deep reasoning, and complex analysis.</p>
+                        <div class="h-1 w-full bg-slate-700 rounded-full overflow-hidden">
+                            <div class="h-full bg-purple-500 w-[98%]"></div>
+                        </div>
+                        <p class="text-xs text-right text-slate-500 mt-1">Intelligence</p>
+                    </div>
+    
+                    <!-- Sonnet -->
+                    <div class="group relative bg-slate-800 rounded-xl border border-slate-700 hover:border-yellow-500 transition-all cursor-pointer overflow-hidden p-6" onclick="selectModel('sonnet')">
+                        <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                            <span class="material-symbols-outlined text-6xl text-yellow-500">balance</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-2">Claude 3 Sonnet</h3>
+                        <div class="text-xs font-mono text-yellow-400 mb-4 uppercase">The Workhorse</div>
+                        <p class="text-slate-400 text-sm mb-4">Balanced performance and cost for scalable workloads.</p>
+                        <div class="h-1 w-full bg-slate-700 rounded-full overflow-hidden">
+                            <div class="h-full bg-yellow-500 w-[75%]"></div>
+                        </div>
+                        <p class="text-xs text-right text-slate-500 mt-1">Balance</p>
+                    </div>
+    
+                    <!-- Haiku -->
+                    <div class="group relative bg-slate-800 rounded-xl border border-slate-700 hover:border-green-500 transition-all cursor-pointer overflow-hidden p-6" onclick="selectModel('haiku')">
+                        <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                            <span class="material-symbols-outlined text-6xl text-green-500">bolt</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-2">Claude 3 Haiku</h3>
+                        <div class="text-xs font-mono text-green-400 mb-4 uppercase">The Speedster</div>
+                        <p class="text-slate-400 text-sm mb-4">Fastest, most cost-effective. Ideal for real-time tasks.</p>
+                        <div class="h-1 w-full bg-slate-700 rounded-full overflow-hidden">
+                            <div class="h-full bg-green-500 w-[40%]"></div>
+                        </div>
+                        <p class="text-xs text-right text-slate-500 mt-1">Cost Efficiency</p>
+                    </div>
+                </div>
+    
+                <div id="model-detail" class="mt-8 bg-yellow-900/20 border border-yellow-500/50 rounded-xl p-6 animate-pulse-slow">
+                    <h4 id="model-detail-title" class="text-lg font-bold text-white mb-2">Claude 3 Sonnet: Scalable Balance</h4>
+                    <p id="model-detail-desc" class="text-slate-300">Use for: Data Processing, RAG, Marketing. The 'Workhorse'. Best balance of speed and smarts.</p>
+                </div>
+            </section>
+    
+            <!-- Module 2: API Anatomy -->
+            <section class="py-20 px-6 bg-slate-900/50 border-y border-slate-800">
+                <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <h2 class="text-3xl font-bold text-white mb-6 flex items-center gap-3">
+                            <span class="p-2 bg-blue-500/10 rounded-lg text-blue-400 material-symbols-outlined">api</span>
+                            2. The Messages API
+                        </h2>
+                        <p class="text-slate-400 mb-6">
+                            Interact with the code block on the right. Hover over the parameters to understand their critical role in enterprise architecture.
+                        </p>
+                        
+                        <div id="api-explanation" class="bg-slate-800 p-6 rounded-xl border border-slate-700 min-h-[150px]">
+                            <h4 class="text-sky-400 font-bold mb-2 text-sm uppercase tracking-wider flex items-center gap-2">
+                                <span class="material-symbols-outlined text-sm">info</span> Parameter Context
+                            </h4>
+                            <p id="api-tooltip-text" class="text-slate-300">Hover over the code snippets to see detailed explanations here.</p>
+                        </div>
+                    </div>
+    
+                    <div class="bg-[#0d1117] rounded-xl overflow-hidden shadow-2xl border border-slate-800 font-mono text-sm relative">
+                        <div class="flex items-center gap-2 px-4 py-3 border-b border-slate-800 bg-slate-900/50">
+                            <div class="w-3 h-3 rounded-full bg-red-500/20 border border-red-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-yellow-500/20 border border-yellow-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-green-500/20 border border-green-500"></div>
+                            <span class="ml-2 text-slate-500 text-xs">POST /v1/messages</span>
+                        </div>
+                        <div class="p-6 text-slate-300 leading-relaxed">
+                            <div class="mb-2"><span class="text-purple-400">client</span>.messages.<span class="text-blue-400">create</span>({</div>
+                            
+                            <div class="pl-4 group code-token p-1" onmouseover="explainAPI('model')" onmouseout="clearAPI()">
+                                <span class="text-sky-300">model</span>: <span class="text-green-300">"claude-3-haiku-20240307"</span>,
+                            </div>
+                            
+                            <div class="pl-4 group code-token p-1" onmouseover="explainAPI('temperature')" onmouseout="clearAPI()">
+                                <span class="text-sky-300">temperature</span>: <span class="text-orange-300">0.0</span>,
+                            </div>
+                            
+                            <div class="pl-4 group code-token p-1" onmouseover="explainAPI('system')" onmouseout="clearAPI()">
+                                <span class="text-sky-300">system</span>: <span class="text-green-300">"You are a financial analyst..."</span>,
+                            </div>
+                            
+                            <div class="pl-4 group code-token p-1" onmouseover="explainAPI('messages')" onmouseout="clearAPI()">
+                                <span class="text-sky-300">messages</span>: [
+                            </div>
+                            <div class="pl-8 text-slate-500">// Alternating user/assistant turns</div>
+                            <div class="pl-8">
+                                { <span class="text-sky-300">role</span>: <span class="text-green-300">"user"</span>, <span class="text-sky-300">content</span>: <span class="text-green-300">"..."</span> }
+                            </div>
+                            <div class="pl-4">]</div>
+                            <div>})</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+    
+            <!-- Module 3: 10-Part Structure -->
+            <section id="anatomy" class="py-20 px-6 max-w-6xl mx-auto">
+                <h2 class="text-3xl font-bold text-white mb-4 flex items-center gap-3">
+                    <span class="p-2 bg-green-500/10 rounded-lg text-green-400 material-symbols-outlined">architecture</span>
+                    3. The 10-Part Prompt Structure
+                </h2>
+                <p class="text-slate-400 mb-10 max-w-3xl">
+                    A high-performance prompt isn't a sentence; it's a document. Use this interactive builder to see how the 10 structural components come together to create a robust enterprise prompt.
+                </p>
+    
+                <div class="grid lg:grid-cols-2 gap-8">
+                    <!-- Interactive Builder Form -->
+                    <div class="space-y-4">
+                        <div class="bg-slate-800 p-5 rounded-lg border-l-4 border-purple-500 cursor-pointer hover:bg-slate-700 transition-colors" onclick="togglePart('system')">
+                            <h3 class="font-bold text-white flex justify-between">
+                                1. System Role &amp; Tone
+                                <span class="material-symbols-outlined text-slate-500">expand_more</span>
+                            </h3>
+                            <p class="text-sm text-slate-400 mt-1">Define who the AI is.</p>
+                            <div id="part-system" class="mt-3 hidden">
+                                <input type="text" id="input-role" placeholder="e.g. Senior Legal Analyst" class="w-full bg-slate-900 border border-slate-600 rounded p-2 text-sm text-white focus:border-purple-500 outline-none mb-2" onkeyup="updatePreview()">
+                                <p class="text-xs text-slate-500">Establishes persona and tone immediately.</p>
+                            </div>
+                        </div>
+    
+                        <div class="bg-slate-800 p-5 rounded-lg border-l-4 border-blue-500 cursor-pointer hover:bg-slate-700 transition-colors" onclick="togglePart('context')">
+                            <h3 class="font-bold text-white flex justify-between">
+                                2. Data &amp; Context
+                                <span class="material-symbols-outlined text-slate-500">expand_more</span>
+                            </h3>
+                            <p class="text-sm text-slate-400 mt-1">Provide background documents.</p>
+                            <div id="part-context" class="mt-3 hidden">
+                                <textarea id="input-context" placeholder="Paste report or data here..." class="w-full bg-slate-900 border border-slate-600 rounded p-2 text-sm text-white focus:border-blue-500 outline-none h-20" onkeyup="updatePreview()"></textarea>
+                                <p class="text-xs text-slate-500 mt-2">Placed inside XML tags for structural isolation.</p>
+                            </div>
+                        </div>
+    
+                        <div class="bg-slate-800 p-5 rounded-lg border-l-4 border-yellow-500 cursor-pointer hover:bg-slate-700 transition-colors" onclick="togglePart('task')">
+                            <h3 class="font-bold text-white flex justify-between">
+                                3. Task &amp; Constraints
+                                <span class="material-symbols-outlined text-slate-500">expand_more</span>
+                            </h3>
+                            <p class="text-sm text-slate-400 mt-1">What to do, what NOT to do.</p>
+                            <div id="part-task" class="mt-3">
+                                <input type="text" id="input-task" placeholder="e.g. Extract key risks" class="w-full bg-slate-900 border border-slate-600 rounded p-2 text-sm text-white focus:border-yellow-500 outline-none mb-2" onkeyup="updatePreview()">
+                                 <input type="text" id="input-constraint" placeholder="e.g. No more than 3 bullet points" class="w-full bg-slate-900 border border-slate-600 rounded p-2 text-sm text-white focus:border-yellow-500 outline-none" onkeyup="updatePreview()">
+                            </div>
+                        </div>
+    
+                        <div class="bg-slate-800 p-5 rounded-lg border-l-4 border-green-500 cursor-pointer hover:bg-slate-700 transition-colors" onclick="togglePart('format')">
+                            <h3 class="font-bold text-white flex justify-between">
+                                4. Output Format
+                                <span class="material-symbols-outlined text-slate-500">expand_more</span>
+                            </h3>
+                            <p class="text-sm text-slate-400 mt-1">JSON, Markdown, XML.</p>
+                            <div id="part-format" class="mt-3">
+                                <select id="input-format" class="w-full bg-slate-900 border border-slate-600 rounded p-2 text-sm text-white focus:border-green-500 outline-none" onchange="updatePreview()">
+                                    <option value="text">Plain Text</option>
+                                    <option value="json">JSON</option>
+                                    <option value="markdown">Markdown</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <!-- Live Preview -->
+                    <div class="relative">
+                        <div class="absolute -top-3 left-4 bg-sky-600 text-white text-xs px-2 py-1 rounded shadow">Live Prompt Preview</div>
+                        <div class="bg-slate-900 border border-slate-700 rounded-xl p-6 h-full font-mono text-xs md:text-sm text-slate-300 overflow-y-auto shadow-inner max-h-[600px]">
+                            
+                            <!-- System Section -->
+                            <div class="mb-4 pb-4 border-b border-slate-800">
+                                <span class="text-purple-400 font-bold block mb-1">// System Parameter</span>
+                                <span class="text-slate-500">You are a </span>
+                                <span id="preview-role" class="text-white bg-purple-500/20 px-1 rounded animate-pulse">...</span>
+                                <span class="text-slate-500">. Maintain a professional, objective tone.</span>
+                            </div>
+    
+                            <!-- User Message -->
+                            <div>
+                                <span class="text-blue-400 font-bold block mb-1">// User Message</span>
+                                
+                                <div class="text-green-400"><documents></documents></div>
+                                <div id="preview-context" class="pl-4 text-slate-500 italic my-1">...data...</div>
+                                <div class="text-green-400"></div>
+                                
+                                <div class="mt-4 text-yellow-400"><instructions></instructions></div>
+                                <div class="pl-4">
+                                    <span class="text-white">Task: </span><span id="preview-task" class="text-slate-300">...</span><br>
+                                    <span class="text-white">Constraint: </span><span id="preview-constraint" class="text-slate-300">...</span>
+                                </div>
+                                <div class="text-yellow-400"></div>
+    
+                                <div class="mt-4 text-sky-400"><output_format></output_format></div>
+                                <div id="preview-format" class="pl-4 text-slate-300">...</div>
+                                <div class="text-sky-400"></div>
+                                
+                                <div id="preview-prefill" class="mt-4 text-indigo-400 hidden">
+                                    <span class="block mb-1 opacity-75">// Assistant Prefill</span>
+                                    {
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+    
+            <!-- Module 4: Advanced Techniques -->
+            <section id="advanced" class="py-20 px-6 bg-slate-900/50 border-y border-slate-800">
+                <div class="max-w-6xl mx-auto">
+                    <h2 class="text-3xl font-bold text-white mb-10 flex items-center gap-3">
+                        <span class="p-2 bg-yellow-500/10 rounded-lg text-yellow-400 material-symbols-outlined">tune</span>
+                        4. Advanced Control Techniques
+                    </h2>
+    
+                    <div class="grid md:grid-cols-3 gap-8">
+                        <!-- XML Tags -->
+                        <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 hover:border-sky-500 transition-colors">
+                            <div class="w-12 h-12 bg-sky-900/50 rounded-lg flex items-center justify-center mb-4">
+                                <span class="material-symbols-outlined text-sky-400">code</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-white mb-2">Structural Isolation</h3>
+                            <p class="text-slate-400 text-sm mb-4">Claude is fine-tuned to recognize XML tags. Use them to separate data from instructions.</p>
+                            <div class="bg-slate-900 p-3 rounded text-xs font-mono text-green-300">
+                                <doc> Report </doc><br>
+                                <rules> Summarize </rules>
+                            </div>
+                        </div>
+    
+                        <!-- Chain of Thought -->
+                        <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 hover:border-pink-500 transition-colors">
+                            <div class="w-12 h-12 bg-pink-900/50 rounded-lg flex items-center justify-center mb-4">
+                                <span class="material-symbols-outlined text-pink-400">psychology_alt</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-white mb-2">Auditable Reasoning</h3>
+                            <p class="text-slate-400 text-sm mb-4">Ask Claude to "think step-by-step" inside <thinking> tags before answering.</thinking></p>
+                            <div class="bg-slate-900 p-3 rounded text-xs font-mono text-pink-300">
+                                <thinking><br>
+                                 1. Analyze data...<br>
+                                </thinking><br>
+                                Answer: 42
+                            </div>
+                        </div>
+    
+                        <!-- Prefill -->
+                        <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 hover:border-indigo-500 transition-colors">
+                            <div class="w-12 h-12 bg-indigo-900/50 rounded-lg flex items-center justify-center mb-4">
+                                <span class="material-symbols-outlined text-indigo-400">start</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-white mb-2">Response Prefill</h3>
+                            <p class="text-slate-400 text-sm mb-4">Force the output format by starting the assistant's response for it.</p>
+                            <div class="bg-slate-900 p-3 rounded text-xs font-mono text-indigo-300">
+                                Role: Assistant<br>
+                                Content: { "status":
+                            </div>
+                        </div>
+                    </div>
+    
+                    <!-- Interactive CoT Demo -->
+                    <div class="mt-12 bg-slate-800 rounded-xl border border-slate-700 overflow-hidden">
+                        <div class="p-4 border-b border-slate-700 bg-slate-900/50 flex justify-between items-center">
+                            <span class="font-bold text-white">Simulation: Chain of Thought (CoT)</span>
+                            <span class="text-xs text-slate-500 bg-slate-800 px-2 py-1 rounded">Try running the task</span>
+                        </div>
+                        <div class="p-6 grid md:grid-cols-2 gap-8">
+                            <div>
+                                <p class="text-slate-300 mb-4 text-sm">Task: "Analyze this legal clause for loopholes."</p>
+                                <button onclick="runSimulation('standard')" class="w-full mb-2 bg-slate-700 hover:bg-slate-600 text-white py-2 rounded transition-colors text-sm">Run Standard Prompt</button>
+                                <button onclick="runSimulation('cot')" class="w-full bg-pink-600 hover:bg-pink-700 text-white py-2 rounded transition-colors text-sm">Run CoT Prompt</button>
+                            </div>
+                            <div class="bg-black rounded p-4 font-mono text-xs h-40 overflow-y-auto" id="sim-output">
+                                <span class="text-slate-500">// Output will appear here...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+    
+            <!-- Module 5: Risk & Reliability -->
+            <section id="risk" class="py-20 px-6 max-w-6xl mx-auto">
+                <h2 class="text-3xl font-bold text-white mb-8 flex items-center gap-3">
+                    <span class="p-2 bg-red-500/10 rounded-lg text-red-400 material-symbols-outlined">shield</span>
+                    5. Risk Mitigation
+                </h2>
+                
+                <div class="bg-gradient-to-r from-red-900/20 to-slate-800 border border-red-500/30 rounded-2xl p-8 flex flex-col md:flex-row items-center gap-8">
+                    <div class="flex-1">
+                        <h3 class="text-2xl font-bold text-white mb-4">Stopping Hallucinations</h3>
+                        <p class="text-slate-300 mb-6">
+                            In enterprise contexts, a wrong answer is worse than no answer. Two mandatory strategies:
+                        </p>
+                        <ul class="space-y-4">
+                            <li class="flex items-start gap-3">
+                                <span class="material-symbols-outlined text-green-400 mt-1">check_circle</span>
+                                <div>
+                                    <strong class="text-white block">Mandatory Context Adherence</strong>
+                                    <span class="text-slate-400 text-sm">"Answer ONLY using the information in the provided <document> tags."</document></span>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="material-symbols-outlined text-green-400 mt-1">check_circle</span>
+                                <div>
+                                    <strong class="text-white block">Controlled Uncertainty</strong>
+                                    <span class="text-slate-400 text-sm">"If the answer is not in the text, respond exactly with 'I don't know'."</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="w-full md:w-1/3 aspect-square bg-slate-900 rounded-xl border border-slate-700 relative overflow-hidden flex items-center justify-center p-6">
+                        <div class="text-center">
+                            <div class="text-red-400 font-mono text-xs mb-2">Without Strategy</div>
+                            <div class="bg-red-500/10 text-red-300 p-2 rounded mb-4 text-xs">"The projected revenue is $5M." <br>(Hallucinated)</div>
+                            
+                            <div class="w-full h-px bg-slate-700 my-4"></div>
+    
+                            <div class="text-green-400 font-mono text-xs mb-2">With Strategy</div>
+                            <div class="bg-green-500/10 text-green-300 p-2 rounded text-xs">"I don't know." <br>(Safe)</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+    
+            <!-- Module 6: Architecture -->
+            <section id="architecture" class="py-20 px-6 bg-slate-900/50 border-y border-slate-800">
+                 <div class="max-w-6xl mx-auto">
+                    <h2 class="text-3xl font-bold text-white mb-10 flex items-center gap-3">
+                        <span class="p-2 bg-indigo-500/10 rounded-lg text-indigo-400 material-symbols-outlined">hub</span>
+                        6. Agentic Architectures
+                    </h2>
+    
+                    <div class="flex flex-col md:flex-row gap-6 mb-8">
+                        <button onclick="showArch('rag')" id="btn-rag" class="arch-btn active flex-1 bg-slate-800 hover:bg-slate-700 text-white p-4 rounded-lg border border-slate-700 text-left transition-all">
+                            <span class="material-symbols-outlined text-indigo-400 block mb-2 text-2xl">database</span>
+                            <div class="font-bold">RAG</div>
+                            <div class="text-xs text-slate-400">Retrieval Augmented Generation</div>
+                        </button>
+                        <button onclick="showArch('chain')" id="btn-chain" class="arch-btn flex-1 bg-slate-800 hover:bg-slate-700 text-white p-4 rounded-lg border border-slate-700 text-left transition-all">
+                            <span class="material-symbols-outlined text-sky-400 block mb-2 text-2xl">link</span>
+                            <div class="font-bold">Prompt Chaining</div>
+                            <div class="text-xs text-slate-400">Multi-step Workflows</div>
+                        </button>
+                        <button onclick="showArch('tools')" id="btn-tools" class="arch-btn flex-1 bg-slate-800 hover:bg-slate-700 text-white p-4 rounded-lg border border-slate-700 text-left transition-all">
+                            <span class="material-symbols-outlined text-orange-400 block mb-2 text-2xl">construction</span>
+                            <div class="font-bold">Tool Use</div>
+                            <div class="text-xs text-slate-400">External Function Calling</div>
+                        </button>
+                    </div>
+    
+                    <!-- Diagrams Area -->
+                    <div class="bg-slate-800 p-8 rounded-2xl border border-slate-700 min-h-[300px] flex items-center justify-center relative overflow-hidden">
+                        <div class="absolute inset-0 opacity-10 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-indigo-900 via-slate-900 to-slate-900"></div>
+                        
+                        <div id="arch-content-rag" class="arch-content relative z-10 w-full max-w-4xl">
+                            <div class="flex items-center justify-between text-center text-xs md:text-sm">
+                                <div class="bg-slate-700 p-4 rounded-lg border border-slate-600 w-32">User Query</div>
+                                <span class="material-symbols-outlined text-slate-500">arrow_forward</span>
+                                <div class="bg-indigo-900/50 p-4 rounded-lg border border-indigo-500 w-32">
+                                    <span class="material-symbols-outlined block mb-1">search</span>
+                                    Retrieval
+                                </div>
+                                <span class="material-symbols-outlined text-slate-500">add</span>
+                                <div class="bg-slate-700 p-4 rounded-lg border border-slate-600 w-32">Prompt</div>
+                                <span class="material-symbols-outlined text-slate-500">arrow_forward</span>
+                                <div class="bg-purple-900/50 p-4 rounded-lg border border-purple-500 w-32 shadow-[0_0_20px_rgba(168,85,247,0.3)]">
+                                    <span class="material-symbols-outlined block mb-1">psychology</span>
+                                    Claude
+                                </div>
+                            </div>
+                            <p class="mt-8 text-center text-slate-300">Injects retrieved knowledge into the context window to ground the model in truth.</p>
+                        </div>
+    
+                        <div id="arch-content-chain" class="arch-content hidden relative z-10 w-full max-w-4xl">
+                            <div class="flex flex-col md:flex-row items-center justify-center gap-4 text-center text-xs md:text-sm">
+                                <div class="bg-slate-700 p-3 rounded-lg w-full md:w-40">Task 1: Extract</div>
+                                <span class="material-symbols-outlined text-slate-500 rotate-90 md:rotate-0">arrow_forward</span>
+                                <div class="bg-slate-700 p-3 rounded-lg w-full md:w-40">Task 2: Summarize</div>
+                                <span class="material-symbols-outlined text-slate-500 rotate-90 md:rotate-0">arrow_forward</span>
+                                <div class="bg-slate-700 p-3 rounded-lg w-full md:w-40">Task 3: Format</div>
+                            </div>
+                            <p class="mt-8 text-center text-slate-300">Decomposes complex tasks. Output of Prompt A becomes Input of Prompt B.</p>
+                        </div>
+    
+                        <div id="arch-content-tools" class="arch-content hidden relative z-10 w-full max-w-4xl">
+                            <div class="flex items-center justify-center gap-8 text-center text-xs md:text-sm">
+                                <div class="bg-purple-900/50 p-6 rounded-full border border-purple-500 w-32 h-32 flex flex-col items-center justify-center relative z-20">
+                                    Claude
+                                </div>
+                                <div class="flex flex-col gap-4 relative z-10">
+                                    <div class="flex items-center gap-2">
+                                        <span class="material-symbols-outlined text-slate-500">arrow_back</span>
+                                        <div class="bg-slate-700 px-4 py-2 rounded">Calculator</div>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="material-symbols-outlined text-slate-500">arrow_back</span>
+                                        <div class="bg-slate-700 px-4 py-2 rounded">Database</div>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="material-symbols-outlined text-slate-500">arrow_back</span>
+                                        <div class="bg-slate-700 px-4 py-2 rounded">Web Search</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="mt-8 text-center text-slate-300">Claude orchestrates external tools to perform actions, not just generate text.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+    
+            <!-- Module 7: Quiz -->
+            <section id="quiz" class="py-20 px-6 max-w-4xl mx-auto mb-20">
+                <h2 class="text-3xl font-bold text-white mb-8">Certification Check</h2>
+                <div class="bg-slate-800 rounded-xl p-8 border border-slate-700">
+                    <div id="quiz-container">
+                        <!-- Question 1 -->
+                        <div class="quiz-step">
+                            <h3 class="text-xl text-white mb-4">1. For a deterministic enterprise application, what temperature setting should you use?</h3>
+                            <div class="space-y-2">
+                                <button onclick="checkAnswer(this, true)" class="w-full text-left p-4 rounded bg-slate-900 hover:bg-slate-700 text-slate-300 transition-colors border border-transparent hover:border-slate-500">0.0</button>
+                                <button onclick="checkAnswer(this, false)" class="w-full text-left p-4 rounded bg-slate-900 hover:bg-slate-700 text-slate-300 transition-colors border border-transparent hover:border-slate-500">0.5</button>
+                                <button onclick="checkAnswer(this, false)" class="w-full text-left p-4 rounded bg-slate-900 hover:bg-slate-700 text-slate-300 transition-colors border border-transparent hover:border-slate-500">1.0</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Question 2 -->
+                        <div class="quiz-step hidden mt-6">
+                            <h3 class="text-xl text-white mb-4">2. Where is the best place to define the AI's permanent persona/role?</h3>
+                            <div class="space-y-2">
+                                <button onclick="checkAnswer(this, false)" class="w-full text-left p-4 rounded bg-slate-900 hover:bg-slate-700 text-slate-300 transition-colors border border-transparent hover:border-slate-500">The User Message</button>
+                                <button onclick="checkAnswer(this, true)" class="w-full text-left p-4 rounded bg-slate-900 hover:bg-slate-700 text-slate-300 transition-colors border border-transparent hover:border-slate-500">The System Parameter</button>
+                                <button onclick="checkAnswer(this, false)" class="w-full text-left p-4 rounded bg-slate-900 hover:bg-slate-700 text-slate-300 transition-colors border border-transparent hover:border-slate-500">The Assistant Prefill</button>
+                            </div>
+                        </div>
+    
+                        <!-- Question 3 -->
+                        <div class="quiz-step hidden mt-6">
+                            <h3 class="text-xl text-white mb-4">3. Which XML tag is used to capture the model's reasoning process?</h3>
+                            <div class="space-y-2">
+                                <button onclick="checkAnswer(this, false)" class="w-full text-left p-4 rounded bg-slate-900 hover:bg-slate-700 text-slate-300 transition-colors border border-transparent hover:border-slate-500"><reasoning></reasoning></button>
+                                <button onclick="checkAnswer(this, false)" class="w-full text-left p-4 rounded bg-slate-900 hover:bg-slate-700 text-slate-300 transition-colors border border-transparent hover:border-slate-500"><logic></logic></button>
+                                <button onclick="checkAnswer(this, true)" class="w-full text-left p-4 rounded bg-slate-900 hover:bg-slate-700 text-slate-300 transition-colors border border-transparent hover:border-slate-500"><thinking></thinking></button>
+                            </div>
+                        </div>
+    
+                         <!-- Result -->
+                        <div id="quiz-result" class="hidden mt-6 text-center">
+                            <div class="material-symbols-outlined text-6xl text-green-400 mb-4">verified</div>
+                            <h3 class="text-2xl font-bold text-white mb-2">Training Complete</h3>
+                            <p class="text-slate-400">You have mastered the foundations of Enterprise Prompt Engineering.</p>
+                            <button onclick="location.reload()" class="mt-6 px-6 py-2 bg-sky-600 text-white rounded hover:bg-sky-500">Review Material</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+    
+            <!-- Footer -->
+            <footer class="p-8 border-t border-slate-800 text-center text-slate-600 text-sm">
+                <p>Based on the Enterprise-Grade Prompt Engineering Manual.</p>
+            </footer>
+    
+        </main>
+    
+        <script>
+            // --- Interactions Logic ---
+    
+            // 1. Model Selector
+            function selectModel(model) {
+                const title = document.getElementById('model-detail-title');
+                const desc = document.getElementById('model-detail-desc');
+                const container = document.getElementById('model-detail');
+                
+                container.classList.remove('hidden');
+                
+                if(model === 'opus') {
+                    title.innerText = "Claude 3 Opus: Complex Intelligence";
+                    desc.innerText = "Use for: Research, Strategy, Complex Coding. The 'Brainiac'. High cost, maximum capability.";
+                    container.className = "mt-8 bg-purple-900/20 border border-purple-500/50 rounded-xl p-6 animate-pulse-slow";
+                } else if(model === 'sonnet') {
+                    title.innerText = "Claude 3 Sonnet: Scalable Balance";
+                    desc.innerText = "Use for: Data Processing, RAG, Marketing. The 'Workhorse'. Best balance of speed and smarts.";
+                    container.className = "mt-8 bg-yellow-900/20 border border-yellow-500/50 rounded-xl p-6 animate-pulse-slow";
+                } else {
+                    title.innerText = "Claude 3 Haiku: Speed & Efficiency";
+                    desc.innerText = "Use for: Moderation, Simple Tasks, Real-time Chat. The 'Speedster'. Lowest cost.";
+                    container.className = "mt-8 bg-green-900/20 border border-green-500/50 rounded-xl p-6 animate-pulse-slow";
+                }
+            }
+    
+            // 2. API Explainer
+            function explainAPI(param) {
+                const tooltip = document.getElementById('api-tooltip-text');
+                const data = {
+                    'model': "Determines cost & intelligence. Example: 'claude-3-haiku' for speed.",
+                    'temperature': "Controls randomness. 0.0 is MANDATORY for consistent enterprise results.",
+                    'system': "Global context. Defines the persona and persistent rules. The 'God Mode' instruction.",
+                    'messages': "The conversation history. Must alternate User/Assistant.",
+                    'role': "Who is speaking? 'User' = you, 'Assistant' = Claude.",
+                };
+                if(data[param]) {
+                    tooltip.innerHTML = `<strong class="text-sky-400 uppercase">${param}</strong>: ${data[param]}`;
+                }
+            }
+            function clearAPI() {
+                document.getElementById('api-tooltip-text').innerHTML = "Hover over the code snippets to see detailed explanations here.";
+            }
+    
+            // 3. Prompt Builder
+            function togglePart(id) {
+                const el = document.getElementById('part-' + id);
+                el.classList.toggle('hidden');
+            }
+    
+            function updatePreview() {
+                const role = document.getElementById('input-role').value || "...";
+                const context = document.getElementById('input-context').value || "...data...";
+                const task = document.getElementById('input-task').value || "...";
+                const constraint = document.getElementById('input-constraint').value || "...";
+                const format = document.getElementById('input-format').value;
+    
+                document.getElementById('preview-role').innerText = role;
+                document.getElementById('preview-context').innerText = context.substring(0, 50) + (context.length > 50 ? "..." : "");
+                document.getElementById('preview-task').innerText = task;
+                document.getElementById('preview-constraint').innerText = constraint;
+    
+                const formatEl = document.getElementById('preview-format');
+                const prefillEl = document.getElementById('preview-prefill');
+                
+                if(format === 'json') {
+                    formatEl.innerText = "Return a valid JSON object.";
+                    prefillEl.classList.remove('hidden');
+                    prefillEl.innerHTML = `<span class="block mb-1 opacity-75 text-slate-500">// Assistant Prefill forces JSON</span>{`;
+                } else if (format === 'markdown') {
+                    formatEl.innerText = "Format using Markdown headers and bullet points.";
+                    prefillEl.classList.add('hidden');
+                } else {
+                    formatEl.innerText = "Plain text.";
+                    prefillEl.classList.add('hidden');
+                }
+            }
+    
+            // 4. CoT Simulation
+            function runSimulation(type) {
+                const output = document.getElementById('sim-output');
+                output.innerHTML = "<span class='animate-pulse text-sky-400'>Processing...</span>";
+                
+                setTimeout(() => {
+                    if(type === 'standard') {
+                        output.innerHTML = `<span class="text-red-400">Standard Output:</span><br>The clause implies liability is waived.`;
+                    } else {
+                        output.innerHTML = `<span class="text-pink-400">&lt;thinking&gt;</span><br>1. Clause mentions "force majeure"...<br>2. Section 4b contradicts...<br><span class="text-pink-400">&lt;/thinking&gt;</span><br><span class="text-green-400">Final Answer:</span><br>The clause is ambiguous regarding liability.`;
+                    }
+                }, 1000);
+            }
+    
+            // 5. Architecture Tabs
+            function showArch(id) {
+                document.querySelectorAll('.arch-content').forEach(el => el.classList.add('hidden'));
+                document.getElementById('arch-content-' + id).classList.remove('hidden');
+                
+                document.querySelectorAll('.arch-btn').forEach(btn => btn.classList.remove('border-sky-500', 'bg-slate-700'));
+                document.getElementById('btn-' + id).classList.add('border-sky-500', 'bg-slate-700');
+            }
+    
+            // 6. Quiz Logic
+            let currentQuestion = 0;
+            function checkAnswer(btn, isCorrect) {
+                const questions = document.querySelectorAll('.quiz-step');
+                
+                if(isCorrect) {
+                    btn.classList.remove('bg-slate-900');
+                    btn.classList.add('bg-green-600', 'text-white');
+                    
+                    setTimeout(() => {
+                        questions[currentQuestion].classList.add('hidden');
+                        currentQuestion++;
+                        if(currentQuestion < questions.length) {
+                            questions[currentQuestion].classList.remove('hidden');
+                        } else {
+                            document.getElementById('quiz-result').classList.remove('hidden');
+                            // Update progress bar to 100%
+                            document.getElementById('progress-bar').style.width = '100%';
+                        }
+                        updateProgress();
+                    }, 800);
+                } else {
+                    btn.classList.remove('bg-slate-900');
+                    btn.classList.add('bg-red-500/20', 'text-red-200', 'border-red-500');
+                }
+            }
+    
+            // Mobile Menu
+            document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+                const sidebar = document.getElementById('sidebar');
+                if(sidebar.classList.contains('-translate-x-full')) {
+                    sidebar.classList.remove('-translate-x-full');
+                } else {
+                    sidebar.classList.add('-translate-x-full');
+                }
+            });
+    
+            // Scroll Progress
+            const sections = ['intro', 'models', 'anatomy', 'advanced', 'risk', 'architecture', 'quiz'];
+            const main = document.querySelector('main');
+            
+            main.addEventListener('scroll', () => {
+                updateProgress();
+            });
+    
+            function updateProgress() {
+                let scrollPercent = main.scrollTop / (main.scrollHeight - main.clientHeight);
+                // If quiz is done, force 100
+                if(document.getElementById('quiz-result').classList.contains('hidden') === false) {
+                     document.getElementById('progress-bar').style.width = '100%';
+                     return;
+                }
+                document.getElementById('progress-bar').style.width = `${scrollPercent * 100}%`;
+            }
+        </script>
+    <!--
+        "/gen?prompt=futuristic+interface+displaying+structured+code+and+ai+brain+blue+and+purple+tones&aspect=16:9"
+    -->
+    
+    </body></html>
