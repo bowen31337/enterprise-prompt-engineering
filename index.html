@@ -426,11 +426,11 @@
                             </h3>
                             <p class="text-sm text-slate-400 mt-1">Define who the AI is.</p>
                             <div id="part-system" class="mt-3 hidden">
-                                <input type="text" id="input-role" placeholder="e.g. Senior Legal Analyst" class="w-full bg-slate-900 border border-slate-600 rounded p-2 text-sm text-white focus:border-purple-500 outline-none mb-2" onkeyup="updatePreview()">
+                                <input type="text" id="input-role" placeholder="e.g. Senior Legal Analyst" class="w-full bg-slate-900 border border-slate-600 rounded p-2 text-sm text-white focus:border-purple-500 outline-none mb-2" onkeyup="updatePreview()" onclick="event.stopPropagation()">
                                 <p class="text-xs text-slate-500">Establishes persona and tone immediately.</p>
                             </div>
                         </div>
-    
+
                         <div class="bg-slate-800 p-5 rounded-lg border-l-4 border-blue-500 cursor-pointer hover:bg-slate-700 transition-colors" onclick="togglePart('context')">
                             <h3 class="font-bold text-white flex justify-between">
                                 2. Data &amp; Context
@@ -438,11 +438,11 @@
                             </h3>
                             <p class="text-sm text-slate-400 mt-1">Provide background documents.</p>
                             <div id="part-context" class="mt-3 hidden">
-                                <textarea id="input-context" placeholder="Paste report or data here..." class="w-full bg-slate-900 border border-slate-600 rounded p-2 text-sm text-white focus:border-blue-500 outline-none h-20" onkeyup="updatePreview()"></textarea>
+                                <textarea id="input-context" placeholder="Paste report or data here..." class="w-full bg-slate-900 border border-slate-600 rounded p-2 text-sm text-white focus:border-blue-500 outline-none h-20" onkeyup="updatePreview()" onclick="event.stopPropagation()"></textarea>
                                 <p class="text-xs text-slate-500 mt-2">Placed inside XML tags for structural isolation.</p>
                             </div>
                         </div>
-    
+
                         <div class="bg-slate-800 p-5 rounded-lg border-l-4 border-yellow-500 cursor-pointer hover:bg-slate-700 transition-colors" onclick="togglePart('task')">
                             <h3 class="font-bold text-white flex justify-between">
                                 3. Task &amp; Constraints
@@ -450,11 +450,11 @@
                             </h3>
                             <p class="text-sm text-slate-400 mt-1">What to do, what NOT to do.</p>
                             <div id="part-task" class="mt-3">
-                                <input type="text" id="input-task" placeholder="e.g. Extract key risks" class="w-full bg-slate-900 border border-slate-600 rounded p-2 text-sm text-white focus:border-yellow-500 outline-none mb-2" onkeyup="updatePreview()">
-                                 <input type="text" id="input-constraint" placeholder="e.g. No more than 3 bullet points" class="w-full bg-slate-900 border border-slate-600 rounded p-2 text-sm text-white focus:border-yellow-500 outline-none" onkeyup="updatePreview()">
+                                <input type="text" id="input-task" placeholder="e.g. Extract key risks" class="w-full bg-slate-900 border border-slate-600 rounded p-2 text-sm text-white focus:border-yellow-500 outline-none mb-2" onkeyup="updatePreview()" onclick="event.stopPropagation()">
+                                 <input type="text" id="input-constraint" placeholder="e.g. No more than 3 bullet points" class="w-full bg-slate-900 border border-slate-600 rounded p-2 text-sm text-white focus:border-yellow-500 outline-none" onkeyup="updatePreview()" onclick="event.stopPropagation()">
                             </div>
                         </div>
-    
+
                         <div class="bg-slate-800 p-5 rounded-lg border-l-4 border-green-500 cursor-pointer hover:bg-slate-700 transition-colors" onclick="togglePart('format')">
                             <h3 class="font-bold text-white flex justify-between">
                                 4. Output Format
@@ -462,7 +462,7 @@
                             </h3>
                             <p class="text-sm text-slate-400 mt-1">JSON, Markdown, XML.</p>
                             <div id="part-format" class="mt-3">
-                                <select id="input-format" class="w-full bg-slate-900 border border-slate-600 rounded p-2 text-sm text-white focus:border-green-500 outline-none" onchange="updatePreview()">
+                                <select id="input-format" class="w-full bg-slate-900 border border-slate-600 rounded p-2 text-sm text-white focus:border-green-500 outline-none" onchange="updatePreview()" onclick="event.stopPropagation()">
                                     <option value="text">Plain Text</option>
                                     <option value="json">JSON</option>
                                     <option value="markdown">Markdown</option>
